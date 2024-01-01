@@ -1,0 +1,48 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+/*
+// Définition du type Bloc
+typedef struct {
+    char *tab; // Tableau de caractères contenant les données du bloc
+    int ne;    // Taille du tableau tab
+    int nb;    // Numéro du bloc suivant dans la liste liée
+} Bloc;
+*/
+
+// Structure représentant le fichier
+typedef struct {
+    FILE *file; // Pointeur sur le fichier physique
+} Fichier;
+
+// Structure du bloc
+typedef struct Bloc {
+    char data[50];  // Tableau de caractères 
+    struct Bloc *next;
+} Bloc;
+
+// Fonction pour ajouter un bloc avec des données
+Bloc *addBloc(Bloc *head, const char *data) {
+    Bloc *newBloc = (Block *)malloc(sizeof(Bloc));
+     if (newBloc == NULL) {
+        perror("Erreur d'allocation de mémoire");
+        exit(EXIT_FAILURE);
+    }
+
+    strncpy(newBloc->data, data, sizeof(newBloc->data) - 1);
+    newBloc->data[sizeof(newBloc->data) - 1] = '\0';  // Assure la null-termination
+    newBloc->next = head;
+
+    return newBloc;
+}
+
+
+
+// Fonction pour afficher les blocs
+void printBloc(Bloc *head) {
+    Bloc *current = head;
+    while (current != NULL) {
+        printf("%s\n", current->data);
+        current = current->next;
+    }
+}

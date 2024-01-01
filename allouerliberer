@@ -1,0 +1,23 @@
+
+
+int allouerBloc(Fichier *f) {
+    int num_bloc = entete(f, 1); // Le premier bloc libre
+    if (num_bloc != -1) { // S'il y a un bloc libre
+        Bloc buffer;
+        lireBloc(f, num_bloc, &buffer); // Lire le premier bloc libre
+        affecterEntete(f, 1, buffer.nb); // Le nouveau premier bloc libre est le bloc suivant
+    } else { // S'il n'y a pas de bloc libre
+        num_bloc = entete(f, 0) + 1; // Allouer un nouveau bloc à la fin du fichier
+        affecterEntete(f, 0, num_bloc);
+    }
+    return num_bloc;
+}
+
+void libererBloc(Fichier *f, int i) {
+    Bloc buffer;
+    lireBloc(f, i, &buffer); // Lire le bloc à libérer
+    free(buffer.tab); // Libérer la mémoire allouée pour le tableau
+    buffer.nb = entete(f, 1); // Le bloc suivant est l'ancien premier bloc libre
+    ecrireBloc(f, i, &buffer); // Écrire le bloc libéré dans le fichier
+    affecterEntete(f, 1, i); // Le nouveau premier bloc libre est le bloc libéré
+}
