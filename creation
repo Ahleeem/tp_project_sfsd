@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#define max ...
 /*
 // Définition du type Bloc
 typedef struct {
@@ -8,27 +10,78 @@ typedef struct {
     int ne;    // Taille du tableau tab
     int nb;    // Numéro du bloc suivant dans la liste liée
 } Bloc;
-*/
 
-// Structure représentant le fichier
-typedef struct {
-    FILE *file; // Pointeur sur le fichier physique
-} Fichier;
-
-/*
 typedef struct Bloc {
 char data[....]; // tableau de caractères pour les enreg.
 int suiv; // numéro du bloc suivant dans la liste
 }Bloc;
 
-*/
-
-
-// Structure du bloc
 typedef struct Bloc {
     char data[....];  // Tableau de caractères 
     struct Bloc *next;
 } Bloc;
+*/
+
+
+
+
+
+typedef struct Tbloc
+{
+    char tab[max];  // le tableau de caractère
+    int suivant;    // le numero du bloc suivant dans la liste
+}Tbloc;
+
+typedef struct Tbloc Buffer;  // declaration du tampon
+typedef struct Entete        // structure de l'entete du fichier en mémoire centrale
+{
+    int nbbloc;
+    int tete;
+    int queue;
+    int indice_libre;   // l'indice libre dans le bloc de la queue
+    int nb_car_sup;
+
+}Entete;
+
+typedef struct L7OV7C
+{
+    FILE *fich;
+    Entete entete;
+
+}L7OV7C;
+
+void creation_fichier(L7OV7C *fichier,int n) // procedure de création du ficher
+{
+    int k=0, cle;
+    char *info=malloc(sizeof(char)*50);
+    aff_entete(fichier,1,1);
+
+    for(k=0;k<n;k++)
+    {
+        printf("\tveuillez introduire la cle que vous voulez inserer\n");
+        scanf("%d",&cle);
+        printf("\t veuillez introduire l'info que vous voulez inserer\n\n");
+        scanf("%s",info);
+        if(cle_correct(cle))
+           {
+
+            insertion_L7OV7C(fichier,cle,info);
+           }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Fonction pour ajouter un bloc avec des données
 Bloc *addBloc(Bloc *head, const char *data) {
