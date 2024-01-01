@@ -1,4 +1,37 @@
 
+void insertion_L7OV7cC(L7OV7C *fichier, int cle, char *info)
+{
+    int i,j,trouv=0,cpt; // declaration des variables
+    Buffer buf;
+    char *cle_ch=malloc((sizeof(char))*100);            // la chaine qui va contenir l'enregistrement qui va etre inseré
+    recherche_L7OV7C(fichier,cle,&trouv,&i,&j);          // recherche de la cle por ezviter les  dopublon
+    if(entete(fichier,1)==0)                           // si la cle n'a  pas été trouvé alors on insere dans le premier bloc
+      aff_entete(fichier,1,1);
+    if(trouv==0)
+    {
+        cpt=0;
+        i=entete(fichier,3);                                             // positionnelent dans le queue
+        j=entete(fichier,4);                                             // positionnnement a la position libre dans le bloc de queue
+        liredir(fichier,i,&buf); // lecture du  bloc
+        sprintf(cle_ch,"%s","");
+        concat(cle_ch,cle,info); // creation de l'enregistrement
+        ecrire_chaine(fichier,strlen(cle_ch),&i,&j,cle_ch,&cpt,&buf);   // ecriture de la chaine construite
+        ecriredir(fichier,i,&buf);                                      // ecriture du dernier bloc en cas de chevauchement
+        aff_entete(fichier,3,i);                                        // mise a jour de la quee
+        aff_entete(fichier,4,j);                                        // mise a jour de la position libre
+    }
+    else
+    {
+        printf("insertion impossible cle deja existante\n");
+    }
+}
+
+
+
+
+
+
+
 inserer( e:Tenreg , nomfich:chaine )
 
 var trouv : booleen
