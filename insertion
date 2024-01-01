@@ -1,5 +1,5 @@
 
-void insertion_L7OV7cC(L7OV7C *fichier, int cle, char *info)
+void insertion_L7OV7C(L7OV7C *fichier, int cle, char *info)
 {
     int i,j,trouv=0,cpt; // declaration des variables
     Buffer buf;
