@@ -1,3 +1,4 @@
+
 inserer( e:Tenreg , nomfich:chaine )
 
 var trouv : booleen
