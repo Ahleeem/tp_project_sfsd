@@ -10,6 +10,7 @@ int allouerBloc(Fichier *f) {
         num_bloc = entete(f, 0) + 1; // Allouer un nouveau bloc à la fin du fichier
         affecterEntete(f, 0, num_bloc);
     }
+
     return num_bloc;
 }
 
@@ -21,3 +22,5 @@ void libererBloc(Fichier *f, int i) {
     ecrireBloc(f, i, &buffer); // Écrire le bloc libéré dans le fichier
     affecterEntete(f, 1, i); // Le nouveau premier bloc libre est le bloc libéré
 }
+
+//n`oublie pas affecterEntete / Entete
