@@ -15,9 +15,18 @@ typedef struct {
     FILE *file; // Pointeur sur le fichier physique
 } Fichier;
 
+/*
+typedef struct Bloc {
+char data[....]; // tableau de caractères pour les enreg.
+int suiv; // numéro du bloc suivant dans la liste
+}Bloc;
+
+*/
+
+
 // Structure du bloc
 typedef struct Bloc {
-    char data[50];  // Tableau de caractères 
+    char data[....];  // Tableau de caractères 
     struct Bloc *next;
 } Bloc;
 
