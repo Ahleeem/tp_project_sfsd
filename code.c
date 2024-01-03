@@ -23,8 +23,10 @@ Fichier ouvrir(char *nom, char *mode) {
         exit(EXIT_FAILURE);
     }
 
-    for (int i = 0; i < 4; i++) {
-        f.entete[i] = 0;
-    }
-    return f;
+
 }
+void Rech( char cle[20], char nomfichier[], int *trouv, int *i, int *j ) {
+    Fichier F = ouvrir(nomfichier, "r");
+    Bloc buf;
+    *i = 1;
+    lireBloc(&F, *i, &buf);
