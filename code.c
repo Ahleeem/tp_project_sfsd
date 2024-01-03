@@ -22,6 +22,10 @@ Fichier ouvrir(char *nom, char *mode) {
         perror("Erreur d'ouverture du fichier");
         exit(EXIT_FAILURE);
     }
+     for (int i = 0; i < 4; i++) {
+        f.entete[i] = 0;
+    }
+    return f;
 
 
 }
