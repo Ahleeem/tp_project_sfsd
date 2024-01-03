@@ -13,5 +13,5 @@ typedef struct {
 typedef struct {
     FILE *file;
     int entete[4];
-    BUFFER buf;
+
 } Fichier;
