@@ -32,23 +32,9 @@ void insertion_L7OV7C(L7OV7C *fichier, int cle, char *info)
 // avecun buffer de 3
 
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#define TAILLE_BUF 512 // Taille du buffer, ajustez selon vos besoins
-
-typedef struct {
-    int suiv;
-    char chaine_longueur[3];
-    char type;
-    char enreg[20];
-} Buf;
-
-
 
 void Inserer(char *NomFichier, char *Cle, char *Enreg) {
-    int Trouv, i, j;
+   
     Recherche(NomFichier, Cle, &Trouv, &i, &j);
 
     if (Trouv) {
@@ -56,7 +42,7 @@ void Inserer(char *NomFichier, char *Cle, char *Enreg) {
     } 
     else {
         FILE *F;
-        Buf buf;
+        bloc buf;
 
         Ouvrir(F, NomFichier, 'A');
         i = Entete(F, 2);
