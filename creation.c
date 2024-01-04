@@ -82,7 +82,7 @@ void creation_fichier(L7OV7C *fichier,int n) // procedure de création du ficher
 
 
 
-
+/*
 
 // Fonction pour ajouter un bloc avec des données
 Bloc *addBloc(Bloc *head, const char *data) {
@@ -99,9 +99,9 @@ Bloc *addBloc(Bloc *head, const char *data) {
     return newBloc;
 }
 
+*/
 
-
-
+/*
 // Fonction pour afficher les blocs
 void printBloc(Bloc *head) {
     Bloc *current = head;
@@ -110,3 +110,4 @@ void printBloc(Bloc *head) {
         current = current->next;
     }
 }
+*/
