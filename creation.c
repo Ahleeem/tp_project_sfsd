@@ -26,6 +26,7 @@ typedef struct Bloc {
 
 
 
+
 typedef struct Tbloc
 {
     char tab[max];  // le tableau de caractère
@@ -97,6 +98,7 @@ Bloc *addBloc(Bloc *head, const char *data) {
 
     return newBloc;
 }
+
 
 
 
