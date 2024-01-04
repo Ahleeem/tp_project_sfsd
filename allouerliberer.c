@@ -36,4 +36,4 @@ void libererBloc(Fichier *f, int i) {
     affecterEntete(f, 1, i); // Le nouveau premier bloc libre est le bloc libéré
 }
 
-//n`oublie pas affecterEntete / Entete
+//n`oublie pas affecterEntete / Entete -------> done... ils sont dans le file insertion
