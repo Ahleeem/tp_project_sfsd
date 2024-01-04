@@ -4,7 +4,8 @@ void insertion_L7OV7C(L7OV7C *fichier, int cle, char *info)
     int i,j,trouv=0,cpt; // declaration des variables
     Buffer buf;
     char *cle_ch=malloc((sizeof(char))*100);            // la chaine qui va contenir l'enregistrement qui va etre inseré
-    recherche_L7OV7C(fichier,cle,&trouv,&i,&j);          // recherche de la cle por ezviter les  dopublon
+   
+    recherche_L7OV7C(fichier,cle,&trouv,&i,&j);          // recherche de la cle pour eviter les  doublon
     if(entete(fichier,1)==0)                           // si la cle n'a  pas été trouvé alors on insere dans le premier bloc
       aff_entete(fichier,1,1);
     if(trouv==0)
@@ -28,25 +29,89 @@ void insertion_L7OV7C(L7OV7C *fichier, int cle, char *info)
 
 
 
+// avecun buffer de 3
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define TAILLE_BUF 512 // Taille du buffer, ajustez selon vos besoins
+
+typedef struct {
+    int suiv;
+    char chaine_longueur[3];
+    char type;
+    char enreg[20];
+} Buf;
+
+
+
+void Inserer(char *NomFichier, char *Cle, char *Enreg) {
+    int Trouv, i, j;
+    Recherche(NomFichier, Cle, &Trouv, &i, &j);
+
+    if (Trouv) {
+        printf("Insertion impossible\n");
+    } 
+    else {
+        FILE *F;
+        Buf buf;
+
+        Ouvrir(F, NomFichier, 'A');
+        i = Entete(F, 2);
+        j = Entete(F, 3);
+
+        sprintf(buf.chaine_longueur, "%03d", (int)strlen(Enreg));//convertir la longeur en chaine de 3 car
+        Ecrire_chaine(3, buf.chaine_longueur, i, j);//copier chaine long dans le buf apartir de j
+        buf.type = 'N';
+        Ecrire_chaine(1, &buf.type, i, j);
+        Ecrire_chaine(strlen(Enreg), Enreg, i, j);
+
+        buf.suiv = -1;
+        EcrireDir(F, i, buf);
+
+        if (i != Entete(F, 2)) {
+            AFF_Entete(F, 2, i);
+        }
+
+        AFF_Entete(F, 3, j);
+
+        Fermer(F);
+    }
+}
 
 
 
 
-inserer( e:Tenreg , nomfich:chaine )
 
-var trouv : booleen
-i,j,k : entier
-e,x : Tenreg
+
+
+
+
+
+
+
+
+
+
+void inseretion ( )
+{
+bool trouv;
+int i,j,k;
+
 
 
 Ouvrir( F,nomfich, 'A')
 // on commence par rechercher la clé e.cle avec le module précédent pour localiser l'emplacement (i,j)
-// où doit être insérer e dans le fichier.
+// où doit être insérerer dans le fichier.
+i=entete(F,2)
+ j=entete(F,3);
 
 Rech( e.cle, nomfich, trouv, i, j )
 
-SI ( Non trouv ) // e doit être inséré dans le bloc i à la position j
-continu ← vrai // en décalant les enreg j, j+1, j+2, ... vers le bas
+SI ( Non trouv )         // e doit être inséré dans le bloc i à la position j
+continu ← vrai            // en décalant les enreg j, j+1, j+2, ... vers le bas
 // si i est plein, le dernier enreg de i doit être inséré dans i+1
 
 TQ ( continu et i ≤ entete(F,1) ) // si le bloc i+1 est aussi plein son dernier enreg sera
@@ -84,7 +149,7 @@ buf.tab[1] ← e ; buf.NB ← 1
 EcrireDir( F, i, buf ) // il suffit d'écrire un nouveau bloc à cet emplacement
 Aff-entete( F, 1, i ) // on sauvegarde le num du dernier bloc dans l'entete 1
 FSI
-
+}
 Aff-entete( F, 2 , entete(F,2)+1 ) // on incrémente le compteur d'insertions
 FSI
 
