@@ -23,16 +23,163 @@ void insertion_L7OV7C(L7OV7C *fichier, int cle, char *info)
     }
     else
     {
-        printf("insertion impossible cle deja existante\n");
+        printf(" la cle existe deja\n");
     }
 }
 
 
+/***************/
+//lire inas
+//ecrire may
+//ouvrir may
+/*****************/
 
-// avecun buffer de 3
 
 
 
+/**********affecter entete*****************************/
+//permet de mettre a jour les elements de l'entete du ficher
+void aff_entete(L7OV7C *fichier,int i , int valeur)
+{
+
+    switch(i)
+    {
+        case 1:
+        {
+            fichier->entete.nbbloc=valeur; // nombre total de bloc alloués dans le fichier
+        }break;
+         case 2:
+        {
+            fichier->entete.tete=valeur;  // numero du bloc representatnt la tete du fichier
+        }break;
+         case 3:
+        {
+            fichier->entete.queue=valeur;  // numero du bloc representatnt la tete duf icheir
+        }break;
+         case 4:
+        {
+            fichier->entete.indice_libre=valeur; // la postion libre dans le bloc de queue
+        }break;
+         case 5:
+        {
+            fichier->entete.nb_car_sup=valeur;  // nombre de caractères suprimé depuis la
+                                                  //création du ficher afin de lancer la réorganiosation
+        }break;
+
+    };
+}
+
+
+
+
+
+
+
+
+
+/******************entete**************************/
+//permet d'obtenir les elements de l'entete du ficher
+int entete(L7OV7C *fichier, int i)
+{
+
+    switch(i)
+    {
+        case 1:
+        {
+            return(fichier->entete.nbbloc);
+        }break;
+         case 2:
+        {
+            return(fichier->entete.tete);
+        }break;
+         case 3:
+        {
+            return(fichier->entete.queue);
+        }break;
+         case 4:
+        {
+            return(fichier->entete.indice_libre);
+        }break;
+         case 5:
+        {
+            return(fichier->entete.nb_car_sup);
+        }break;
+
+    };
+}
+
+
+
+
+
+
+
+/********************ecrirechaine*********************/
+void ecrire_chaine(L7OVC *fichier,int n , int *i, int *j, char chaine[],int *cpt,Buffer *buf)
+{
+
+    int k=0;
+    (*cpt)=0;     // nombre de bloc ajoutés
+    for(k=0;k<n;k++)   // k pourn le deplacement dans la chaine
+    {
+        if((*j)<=98)  //si je suis toujours dans le bloc conserné
+        {
+            buf->tab[*j]=chaine[k]; // affectation des caractères de la chaine dans le buffer un a un
+            (*j)++;                  // deplacement da,s le buffer
+        }
+        else                          // si la chaine a inserer depasse le buffer
+         {
+            ecriredir(fichier,*i,buf);  // ecriture du precedent buffer dans le fichier
+            alloc_bloc(fichier);        // alocation d'un nouveau bloc afin de recevoir le reste de la chaine
+            buf->tab[0]=chaine[k];      // ecrtiture du kiem caractère de la chaine dans la position 0
+            (*j)=1;                     // passage a la position 1
+            (*i)=entete(fichier,3);     // deplacement dans les bloc du ficher
+           (*cpt)++;                   // incrementation du nombre de bloc alloues
+        }
+    }
+    buf->tab[*j]='\0';                  // fin de la chaine
+
+}
+
+
+
+
+
+
+/*************************conctat**************************/
+//-fonction qui permet de construire la chaine correspondant a la forme de l'enregistrememnt//
+void concat(char chaine[], int cle, char info[])  //  a inserer dans le ficheir a partir de la cle et de l'info
+{
+
+    char ch_f[100];
+    turn_to_string(ch_f,cle,5);                   // transformation de la cle en chaine sur 5 positions
+    strcat(ch_f,info);                            // concaténation de cle et info
+    turn_to_string(chaine,strlen(info),3);        // construction du debut de la chaine finale en commençant par la taille de l'info
+    strcat(chaine,"f");                           // mise a jour du champs effacé
+    strcat(chaine,ch_f);                          // constructu=ion de la chaine finale avec l'ordre suivant taille efface cle info
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 void Inserer(char *NomFichier, char *Cle, char *Enreg) {
    
     Recherche(NomFichier, Cle, &Trouv, &i, &j);
@@ -66,21 +213,9 @@ void Inserer(char *NomFichier, char *Cle, char *Enreg) {
         Fermer(F);
     }
 }
+*/
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/*
 void inseretion ( )
 {
 bool trouv;
@@ -141,3 +276,4 @@ FSI
 
 Fermer( F )
 FIN // insertion
+*/
