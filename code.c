@@ -29,8 +29,24 @@ Fichier ouvrir(char *nom, char *mode) {
 
 
 }
+void recuperer_chaine( int n, int i, int *j, char *ch, Bloc *buf ) {
+    int k=0;
+    for (k = 0; k < n; k++) {
+        ch[k] = buf->tab[j];
+        (*j)++;
+        if (*j > b) {
+            *j = 1
+            i = buf->Suiv;
+            lireBloc(&F, i, buf);
+        }
+    }
+
+}
 void Rech( char cle[20], char nomfichier[], int *trouv, int *i, int *j ) {
     Fichier F = ouvrir(nomfichier, "r");
     Bloc buf;
     *i = 1;
     lireBloc(&F, *i, &buf);
+    while ( *i < entete(&F,1) || *j != entete(&F,2) ) {
+
+
