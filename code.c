@@ -4,7 +4,11 @@
 
 #define b 512 //taille du bloc
 
-
+/*les caracteristiques sont:
+1- Numéro du premier bloc .
+2-Numéro du dernier bloc.
+3-La 1ère position libre dans le dernier bloc.
+4-Le nombre de caractères perdus suite aux suppressions logiques.*/
 typedef struct {
     char tab[b];//tableau de caracteres
     int Suiv;//num du bloc suivant
