@@ -43,10 +43,25 @@ void recuperer_chaine( int n, int i, int *j, char *ch, Bloc *buf ) {
 
 }
 void Rech( char cle[20], char nomfichier[], int *trouv, int *i, int *j ) {
-    Fichier F = ouvrir(nomfichier, "r");
+    Fichier F = ouvrir(nomfichier, "rw");
     Bloc buf;
     *i = 1;
     lireBloc(&F, *i, &buf);
     while ( *i < entete(&F,1) || *j != entete(&F,2) ) {
+        char chLog[3];
+          recuperer_chaine( 3, *i, j, chLong, &buf );
+char eff[1];
+    recuperer_chaine( 1, *i, j, eff, &buf );
+    char chCle[20];
+        recuperer_chaine( 20, *i, j, chCle, &buf );
+if ( strcmp(chCle, cle) = 0 || eff[0] == 'N' )
+trouv = 1;
+        else {
+        *j = *j + atoi(chLong);
+        *j = 1;
+        *i = buf.Suiv
+        lireBloc(&F, *i, &buf);}
+}
 
-
+    fermer(&F);
+}
