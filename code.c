@@ -34,18 +34,22 @@ Fichier ouvrir(char *nom, char *mode) {
 
 }
 void recuperer_chaine( int n, int i, int *j, char *ch, Bloc *buf ) {
-    int k=0;
+    int k;
     for (k = 0; k < n; k++) {
         ch[k] = buf->tab[*j];
         (*j)++;
         if (*j > b) {
-            *j = 1
+            *j = 1;
             i = buf->Suiv;
-            lireBloc(&F, i, buf);
+            lireBloc(file, i, buf);
         }
     }
+    ch[k] = '\0'; // Ajout du caractère de fin de chaîne
+}
+
 
 }
+Recherche séquentielle
 void Rech( char cle[20], char nomfichier[], int *trouv, int *i, int *j ) {
     Fichier F = ouvrir(nomfichier, "r");
     Bloc buf;
@@ -73,3 +77,26 @@ void Rech( char cle[20], char nomfichier[], int *trouv, int *i, int *j ) {
     }
     fermer(&F);
 }
+Suppression logique
+void Sup(char *cle, char *nomfichier) {
+    int trouv, i, j;
+    Rech(cle, nomfichier, &trouv, &i, &j);
+    if (trouv) {
+        Fichier F = ouvrir(nomfichier, "a");
+        Bloc buf;
+        lireBloc(&F, i, &buf);
+        char ch[3];
+        recuperer_chaine(3, i, &j, ch, &buf);
+        if (j <= b) {
+            buf.tab[j] = 'E';
+        } else {
+            i = buf.Suiv;
+            lireBloc(&F, i, &buf);
+            buf.tab[1] = 'E';
+        }
+        ecrireBloc(&F, i, &buf);
+        affecterEntete(&F, 4, entete(&F, 4) + atoi(ch) + 4);
+        fermer(&F);
+    }
+}
+
