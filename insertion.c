@@ -115,14 +115,14 @@ int entete(L7OV7C *fichier, int i)
 
 
 /********************ecrirechaine*********************/
-void ecrire_chaine(L7OVC *fichier,int n , int *i, int *j, char chaine[],int *cpt,Buffer *buf)
+void ecrire_chaine(L7OV7C *fichier,int n , int *i, int *j, char chaine[],int *cpt,Buffer *buf)
 {
 
     int k=0;
-    (*cpt)=0;     // nombre de bloc ajoutés
-    for(k=0;k<n;k++)   // k pourn le deplacement dans la chaine
+    (*cpt)=0;                         // nombre de bloc ajoutés
+    for(k=0;k<n;k++)                // k pour le deplacement dans la chaine
     {
-        if((*j)<=98)  //si je suis toujours dans le bloc conserné
+        if((*j)<=98)                //si je suis toujours dans le bloc conserné
         {
             buf->tab[*j]=chaine[k]; // affectation des caractères de la chaine dans le buffer un a un
             (*j)++;                  // deplacement da,s le buffer
