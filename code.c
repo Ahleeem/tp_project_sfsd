@@ -49,7 +49,7 @@ void recuperer_chaine( int n, int i, int *j, char *ch, Bloc *buf ) {
 
 
 }
-Recherche séquentielle
+
 void Rech( char cle[20], char nomfichier[], int *trouv, int *i, int *j ) {
     Fichier F = ouvrir(nomfichier, "r");
     Bloc buf;
@@ -77,7 +77,7 @@ void Rech( char cle[20], char nomfichier[], int *trouv, int *i, int *j ) {
     }
     fermer(&F);
 }
-Suppression logique
+
 void Sup(char *cle, char *nomfichier) {
     int trouv, i, j;
     Rech(cle, nomfichier, &trouv, &i, &j);
@@ -99,4 +99,3 @@ void Sup(char *cle, char *nomfichier) {
         fermer(&F);
     }
 }
-
