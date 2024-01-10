@@ -51,7 +51,7 @@ typedef struct L7OV7C
 
 }L7OV7C;
 
-void creation_fichier(L7OV7C *fichier,int n) // procedure de création du ficher
+void creation_fichier(L7OV7C *fichier,int n)
 {
     int k=0, cle;
     char *info=malloc(sizeof(char)*50);
@@ -60,9 +60,9 @@ void creation_fichier(L7OV7C *fichier,int n) // procedure de création du ficher
     for(k=0;k<n;k++)
     {
         printf("\tveuillez introduire la cle que vous voulez inserer\n");
-        scanf("%d",&cle);
+        scanf("%d",&cle);     // la cle a inserer
         printf("\t veuillez introduire l'info que vous voulez inserer\n\n");
-        scanf("%s",info);
+        scanf("%s",info);     //info a inserer
         if(cle_correct(cle))
            {
 
