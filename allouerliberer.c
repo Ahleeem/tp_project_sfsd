@@ -30,11 +30,11 @@ int allouerBloc(Fichier *f) {
 
 void libererBloc(Fichier *f, int i) {
     Bloc buffer;
-    lireBloc(f, i, &buffer); // Lire le bloc à libérer
-    free(buffer.tab); // Libérer la mémoire allouée pour le tableau
-    buffer.nb = entete(f, 1); // Le bloc suivant est l'ancien premier bloc libre
-    ecrireBloc(f, i, &buffer); // Écrire le bloc libéré dans le fichier
-    affecterEntete(f, 1, i); // Le nouveau premier bloc libre est le bloc libéré
+    lireBloc(f, i, &buffer);    // Lire le bloc à libérer
+    free(buffer.tab);           // Libérer la mémoire allouée pour le tableau
+    buffer.nb = entete(f, 1);    // Le bloc suivant est l'ancien premier bloc libre
+    ecrireBloc(f, i, &buffer);   // Écrire le bloc libéré dans le fichier
+    affecterEntete(f, 1, i);      // Le nouveau premier bloc libre est le bloc libéré
 }
 
 //n`oublie pas affecterEntete / Entete -------> done... ils sont dans le file insertion
