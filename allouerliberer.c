@@ -12,7 +12,7 @@ void  alloc_bloc(L7OV7C *fichier)
         aff_entete(fichier,1,entete(fichier,1)+1);// incrémentation du nombre de bloc alloués
 }
 
-
+/****** this is with "chevauchement" 
 int allouerBloc(Fichier *f) {
     int num_bloc = entete(f, 1); // Le premier bloc libre
     if (num_bloc != -1) { // S'il y a un bloc libre
@@ -26,6 +26,7 @@ int allouerBloc(Fichier *f) {
 
     return num_bloc;
 }
+*/
 
 void libererBloc(Fichier *f, int i) {
     Bloc buffer;
