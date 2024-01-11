@@ -3,6 +3,7 @@
 #include <string.h>
 
 #define b 512 //taille du bloc
+#define MaxIndex 100
 
 /*les caracteristiques sont:
 1- Numéro du premier bloc .
@@ -19,11 +20,27 @@ typedef struct {
     int entete[4];//entete contient 4 caracteristiques
 
 } Fichier;
+//declaration de l'index
+typedef struct maillon {
+    struct {
+        int numblc;
+        int depl;
+    } val;
+
+struct maillon *adr;
+} Maillon;
+
+typedef struct {
+    char cle[20];
+    Maillon *tete;
+} Tcouple;
+
+Tcouple Index[MaxIndex];
 Fichier ouvrir(char *nom, char *mode) {
-    Fichier f;
-    f.file = fopen(nom, mode);
+Fichier f;
+f.file = fopen(nom, mode);
     if (f.file == NULL) {
-        perror("Erreur d'ouverture du fichier");
+        perror("erreur d'ouverture du fichier");
         exit(EXIT_FAILURE);
     }
      for (int i = 0; i < 4; i++) {
@@ -33,6 +50,17 @@ Fichier ouvrir(char *nom, char *mode) {
 
 
 }
+void ecrireBloc(Fichier *f, int i, Bloc *buffer) {
+    if (f->file != NULL) {
+        fseek(f->file, i * sizeof(Bloc), SEEK_SET);
+        size_t result = fwrite(buffer, sizeof(Bloc), 1, f->file);
+        if (result != 1) {
+            perror("erreur d'ecriture du bloc");
+            exit(EXIT_FAILURE);
+        }
+    }
+}
+
 void recuperer_chaine( int n, int i, int *j, char *ch, Bloc *buf ) {
     int k;
     for (k = 0; k < n; k++) {
@@ -41,46 +69,42 @@ void recuperer_chaine( int n, int i, int *j, char *ch, Bloc *buf ) {
         if (*j > b) {
             *j = 1;
             i = buf->Suiv;
-            lireBloc(file, i, buf);
+            lireBloc(&F, i, buf);
         }
     }
-    ch[k] = '\0'; // Ajout du caractère de fin de chaîne
+    ch[k] = '\0';
 }
 
-
-}
-
-void Rech( char cle[20], char nomfichier[], int *trouv, int *i, int *j ) {
-    Fichier F = ouvrir(nomfichier, "r");
+void construireIndex(Fichier *f, Tcouple *Index) {
+    int i = 1, j = 1, ind = 0;
     Bloc buf;
-    *i = 1;
-    lireBloc(&F, *i, &buf);
-    while ( *i < entete(&F,1) || *j != entete(&F,2) ) { // i<denierBloc OU j<>posLibre
-        // a chaque itération, on traite un enreg
+    lireBloc(f, i, &buf);
+    while (i < entete(f, 1) || j != entete(f, 2)) {
         char chLong[3];
-        recuperer_chaine( 3, *i, j, chLong, &buf ); // récupère longueur de l'enreg
-        char eff[1];
-        recuperer_chaine( 1, *i, j, eff, &buf ); // le car d'effacement
+        recuperer_chaine(3, i, &j, chLong, &buf);
+        recuperer_chaine(1, i, &j, eff, &buf);
         char chCle[20];
-        recuperer_chaine( 20, *i, j, chCle, &buf ); // et la clé de l'enreg
-        if ( strcmp(chCle, cle) == 0 && eff[0] == 'N' )
-            *trouv = 1;
-        else {
-            // on passe au suivant
-            *j = *j + atoi(chLong); // on a deja lu les 20 car de la cle
-            if ( *j > b ) {
-                *j = 1;
-                *i = buf.Suiv;
-                lireBloc(&F, *i, &buf);
-            }
+        recuperer_chaine(20, i, &j, chCle, &buf);
+        if (eff[0] == 'N') {
+
+        strcpy(Index[ind].cle, chCle);
+    Index[ind].tete = malloc(sizeof(Maillon));
+    Index[ind].tete->val.numblc = i;
+    Index[ind].tete->val.depl = j - 20;
+    Index[ind].tete->adr = NULL;
+            ind++;
+        }
+
+        j = j + atoi(chLong);
+        if (j > b) {j = 1;
+            i = buf.Suiv;
+            lireBloc(f, i, &buf);
         }
     }
-    fermer(&F);
 }
-
 void Sup(char *cle, char *nomfichier) {
-    int trouv, i, j;
-    Rech(cle, nomfichier, &trouv, &i, &j);
+    int trouv, i, j, ind;
+    Recherche_Liste_Variable_NonOrdonnee(nomfichier, cle, Index, MaxIndex, &trouv, &ind, &i, &j);
     if (trouv) {
         Fichier F = ouvrir(nomfichier, "a");
         Bloc buf;
