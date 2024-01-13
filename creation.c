@@ -55,7 +55,7 @@ void creation_fichier(L7OV7C *fichier,int n)
 {
     int k=0, cle;
     char *info=malloc(sizeof(char)*50);
-    aff_entete(fichier,1,1);
+    aff_entete(fichier,1,1); //nbr totale de bloc allouer =1
 
     for(k=0;k<n;k++)
     {
@@ -71,7 +71,36 @@ void creation_fichier(L7OV7C *fichier,int n)
     }
 }
 
+//permet de mettre a jour les elements de l'entete du ficher
+void aff_entete(L7OV7C *fichier,int i , int valeur)
+{
 
+    switch(i)
+    {
+        case 1:
+        {
+            fichier->entete.nbbloc=valeur; // nombre total de bloc alloués dans le fichier
+        }break;
+         case 2:
+        {
+            fichier->entete.tete=valeur;  // numero du bloc representatnt la tete du fichier
+        }break;
+         case 3:
+        {
+            fichier->entete.queue=valeur;  // numero du bloc representatnt la tete du fichier
+        }break;
+         case 4:
+        {
+            fichier->entete.indice_libre=valeur; // la postion libre dans le bloc de queue
+        }break;
+         case 5:
+        {
+            fichier->entete.nb_car_sup=valeur;  // nombre de caractères suprimé depuis la
+                                                  //création du ficher 
+        }break;
+
+    };
+}
 
 
 
