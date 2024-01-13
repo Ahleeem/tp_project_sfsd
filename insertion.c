@@ -13,10 +13,11 @@ void insertion_L7OV7C(L7OV7C *fichier, int cle, char *info)
         cpt=0;
         i=entete(fichier,3);                                             // positionnelent dans le queue
         j=entete(fichier,4);                                             // positionnnement a la position libre dans le bloc de queue
-        liredir(fichier,i,&buf); // lecture du  bloc
-        sprintf(cle_ch,"%s","");
-        concat(cle_ch,cle,info); // creation de l'enregistrement
+        liredir(fichier,i,&buf);                                          // lecture du  bloc
+        sprintf(cle_ch,"%s","");                                         //convertir en chaine
+        concat(cle_ch,cle,info);                                       // creation de l'enregistrement
         ecrire_chaine(fichier,strlen(cle_ch),&i,&j,cle_ch,&cpt,&buf);   // ecriture de la chaine construite
+        
         ecriredir(fichier,i,&buf);                                      // ecriture du dernier bloc en cas de chevauchement
         aff_entete(fichier,3,i);                                        // mise a jour de la quee
         aff_entete(fichier,4,j);                                        // mise a jour de la position libre
@@ -86,23 +87,23 @@ int entete(L7OV7C *fichier, int i)
     {
         case 1:
         {
-            return(fichier->entete.nbbloc);
+            return(fichier->entete.nbbloc); // nb bloc allouer
         }break;
          case 2:
         {
-            return(fichier->entete.tete);
+            return(fichier->entete.tete); // tete
         }break;
          case 3:
         {
-            return(fichier->entete.queue);
+            return(fichier->entete.queue); // la queue
         }break;
          case 4:
         {
-            return(fichier->entete.indice_libre);
+            return(fichier->entete.indice_libre); // indice libre
         }break;
          case 5:
         {
-            return(fichier->entete.nb_car_sup);
+            return(fichier->entete.nb_car_sup); // nb carac supremer //A confimer si on a besoin 
         }break;
 
     };
@@ -119,19 +120,19 @@ void ecrire_chaine(L7OV7C *fichier,int n , int *i, int *j, char chaine[],int *cp
 {
 
     int k=0;
-    (*cpt)=0;                         // nombre de bloc ajoutés
+    (*cpt)=0;                         // nombre de bloc ajoutés 
     for(k=0;k<n;k++)                // k pour le deplacement dans la chaine
     {
         if((*j)<=98)                //si je suis toujours dans le bloc conserné
         {
             buf->tab[*j]=chaine[k]; // affectation des caractères de la chaine dans le buffer un a un
-            (*j)++;                  // deplacement da,s le buffer
+            (*j)++;                  // deplacement dans le buffer
         }
         else                          // si la chaine a inserer depasse le buffer
          {
             ecriredir(fichier,*i,buf);  // ecriture du precedent buffer dans le fichier
-            alloc_bloc(fichier);        // alocation d'un nouveau bloc afin de recevoir le reste de la chaine
-            buf->tab[0]=chaine[k];      // ecrtiture du kiem caractère de la chaine dans la position 0
+            alloc_bloc(fichier);        // allocation d'un nouveau bloc afin de recevoir le reste de la chaine
+            buf->tab[0]=chaine[k];      // ecrtiture du k°eme caractère de la chaine dans la position 0
             (*j)=1;                     // passage a la position 1
             (*i)=entete(fichier,3);     // deplacement dans les bloc du ficher
            (*cpt)++;                   // incrementation du nombre de bloc alloues
@@ -156,7 +157,7 @@ void concat(char chaine[], int cle, char info[])  //  a inserer dans le ficheir 
     strcat(ch_f,info);                            // concaténation de cle et info
     turn_to_string(chaine,strlen(info),3);        // construction du debut de la chaine finale en commençant par la taille de l'info
     strcat(chaine,"f");                           // mise a jour du champs effacé
-    strcat(chaine,ch_f);                          // constructu=ion de la chaine finale avec l'ordre suivant taille efface cle info
+    strcat(chaine,ch_f);                          // construction de la chaine finale avec l'ordre suivant taille efface cle info
 }
 
 
