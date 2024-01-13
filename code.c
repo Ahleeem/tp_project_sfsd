@@ -143,6 +143,24 @@ void Sup(char *cle, char *nomfichier) {
         }
         ecrireBloc(&F, i, &buf);
         affecterEntete(&F, 4, entete(&F, 4) + atoi(ch) + 4);//update de l'entete
+
+        //Mise a jour de l'index apres la suppression
+    Maillon *courant = Index[ind].tete;
+    Maillon *precedent = NULL;
+        while (courant != NULL) {
+            if (courant->val.numblc == i && courant->val.depl == j - 20) {
+                if (precedent == NULL) {
+                    Index[ind].tete = courant->adr;
+                } else {
+                    precedent->adr = courant->adr;
+                }
+                free(courant);
+                break;
+            }
+            precedent = courant;
+            courant = courant->adr;
+        }
+
         fermer(&F);
-    }
+}
 }
