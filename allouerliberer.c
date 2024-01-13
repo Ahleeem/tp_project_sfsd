@@ -3,11 +3,11 @@ void  alloc_bloc(L7OV7C *fichier)
 
         Buffer *buf=malloc(sizeof(Buffer));       // allocation du Buffer
         liredir(fichier,entete(fichier,3),buf);   // lecture du bloc correspondant a la queue
-        buf->suivant=entete(fichier,1)+1;         // mise a jour dui suvant de la queue au bloc correspondant a la nouvelle queue
+        buf->suivant=entete(fichier,1)+1;         // mise a jour du suivant de la queue au bloc correspondant a la nouvelle queue
         ecriredir(fichier,entete(fichier,3),buf);// ecriture du bloc de queue dans le fichier
-        aff_entete(fichier,3,entete(fichier,1)+1);// mise a jour du numero du bloc correspondant a la nouvelle queue dan sl'entete
+        aff_entete(fichier,3,entete(fichier,1)+1);// mise a jour du numero du bloc correspondant a la nouvelle queue dans l'entete
         buf->suivant=-1;                         // mise a jour du suivant a nill
-        sprintf(buf->tab,"%s","");               // vider la chaine du buffer
+        sprintf(buf->tab,"%s","");               // vider la chaine du buffer  apres convertion
         ecriredir(fichier,entete(fichier,3),buf);// ecriture du buffer dans le bloc representatnt la nouvelle queue
         aff_entete(fichier,1,entete(fichier,1)+1);// incrémentation du nombre de bloc alloués
 }
