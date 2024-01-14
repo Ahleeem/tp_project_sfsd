@@ -120,8 +120,42 @@ void ajouterValeur(Fichier *f, char *cle, Tcouple *Index, int *taille)
 void Recherche_Liste_Variable_NonOrdonnee(char *nom_f, char *cle, Tcouple *Index, int taille, int *trouv, int *ind, int *i, int *j) {
     Fichier F = ouvrir(nom_f, "r");
     Bloc buf;
+*i = 1;
+    lireBloc(&F, *i, &buf);
+    //recherche dans l'index
+    *ind = 0;
+    while (*ind < taille && strcmp(Index[*ind].cle, cle) < 0) {
+        (*ind)++;
     }
+    if (*ind < taille && strcmp(Index[*ind].cle, cle) == 0) {
+        //si la cle est dans l'index, aller directement au bloc correspondant.
+        *i = Index[*ind].tete->val.numblc;
+        *j = Index[*ind].tete->val.depl;
+        lireBloc(&F, *i, &buf);
+        *trouv = 1;
+    } else {
+        *trouv = 0;
+        while (*i < entete(&F,1) || *j != entete(&F,2)) {
+            char chLong[3];
+            recuperer_chaine(3, *i, j, chLong, &buf);
+            recuperer_chaine(1, *i, j, eff, &buf);
+            char chCle[20];
+            recuperer_chaine(20, *i, j, chCle, &buf);
+            if (strcmp(chCle, cle) == 0 && eff[0] == 'N') {
+                *trouv =1;
+            } else {
 
+                *j = *j + atoi(chLong);
+                if (*j > b) {
+                *j = 1;
+                *i = buf.Suiv;
+                lireBloc(&F, *i, &buf);
+                            }
+              }
+        }
+    }
+    fermer(&F);
+}
 
  //implementation de la focntion de suppression logique
  //N veut dire non efface et E veut dire efface
