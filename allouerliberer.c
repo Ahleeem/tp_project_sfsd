@@ -1,4 +1,4 @@
-void  alloc_bloc(L7OV7C *fichier)
+void  alloc_bloc(Fichier *fichier)
 {
 
         Buffer *buf=malloc(sizeof(Buffer));       // allocation du Buffer
