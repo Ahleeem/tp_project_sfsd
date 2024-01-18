@@ -2,31 +2,28 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define max ...
-/*
-// Définition du type Bloc
+#define b 512 //taille du bloc
+#define MaxIndex 100
+
+/*les caracteristiques sont:
+1- Numéro du premier bloc .
+2-Numéro du dernier bloc.
+3-La 1ère position libre dans le dernier bloc.
+4-Le nombre de caractères perdus suite aux suppressions logiques.*/
 typedef struct {
-    char *tab; // Tableau de caractères contenant les données du bloc
-    int ne;    // Taille du tableau tab
-    int nb;    // Numéro du bloc suivant dans la liste liée
+    char tab[b];//tableau de caracteres
+    int Suiv;//num du bloc suivant
 } Bloc;
 
-typedef struct Bloc {
-char data[....]; // tableau de caractères pour les enreg.
-int suiv; // numéro du bloc suivant dans la liste
-}Bloc;
+typedef struct {
+    FILE *file;
+    int entete[4];//entete contient 4 caracteristiques
 
-typedef struct Bloc {
-    char data[....];  // Tableau de caractères 
-    struct Bloc *next;
-} Bloc;
-*/
+} Fichier;
 
 
-
-
-
-
+//*****************************my declaration
+/*
 typedef struct Tbloc
 {
     char tab[max];  // le tableau de caractère
@@ -50,8 +47,10 @@ typedef struct L7OV7C
     Entete entete;
 
 }L7OV7C;
+*/
 
-void creation_fichier(L7OV7C *fichier,int n)
+
+void creation_fichier(Fichier *fichier,int n)
 {
     int k=0, cle;
     char *info=malloc(sizeof(char)*50);
@@ -66,13 +65,13 @@ void creation_fichier(L7OV7C *fichier,int n)
         if(cle_correct(cle))
            {
 
-            insertion_L7OV7C(fichier,cle,info);
+            insertion(fichier,cle,info);
            }
     }
 }
 
 //permet de mettre a jour les elements de l'entete du ficher
-void aff_entete(L7OV7C *fichier,int i , int valeur)
+void aff_entete(Fichier *fichier,int i , int valeur)
 {
 
     switch(i)
@@ -113,7 +112,7 @@ void aff_entete(L7OV7C *fichier,int i , int valeur)
 
 /*
 
-// Fonction pour ajouter un bloc avec des données
+// ********Fonction pour ajouter un bloc avec des données
 Bloc *addBloc(Bloc *head, const char *data) {
     Bloc *newBloc = (Block *)malloc(sizeof(Bloc));
      if (newBloc == NULL) {
@@ -131,7 +130,7 @@ Bloc *addBloc(Bloc *head, const char *data) {
 */
 
 /*
-// Fonction pour afficher les blocs
+// ************Fonction pour afficher les blocs
 void printBloc(Bloc *head) {
     Bloc *current = head;
     while (current != NULL) {
