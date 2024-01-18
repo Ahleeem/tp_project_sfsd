@@ -1,11 +1,11 @@
 
-void insertion_L7OV7C(L7OV7C *fichier, int cle, char *info)
+void insertion(Fichier *fichier, int cle, char *info)
 {
     int i,j,trouv=0,cpt; // declaration des variables
     Buffer buf;
     char *cle_ch=malloc((sizeof(char))*100);            // la chaine qui va contenir l'enregistrement qui va etre inseré
    
-    recherche_L7OV7C(fichier,cle,&trouv,&i,&j);          // recherche de la cle pour eviter les  doublon
+    recherche(fichier,cle,&trouv,&i,&j);          // recherche de la cle pour eviter les  doublon
     if(entete(fichier,1)==0)                           // si la cle n'a  pas été trouvé alors on insere dans le premier bloc
       aff_entete(fichier,1,1);
     if(trouv==0)
@@ -40,7 +40,7 @@ void insertion_L7OV7C(L7OV7C *fichier, int cle, char *info)
 
 /**********affecter entete*****************************/
 //permet de mettre a jour les elements de l'entete du ficher
-void aff_entete(L7OV7C *fichier,int i , int valeur)
+void aff_entete(Fichier *fichier,int i , int valeur)
 {
 
     switch(i)
@@ -80,7 +80,7 @@ void aff_entete(L7OV7C *fichier,int i , int valeur)
 
 /******************entete**************************/
 //permet d'obtenir les elements de l'entete du ficher
-int entete(L7OV7C *fichier, int i)
+int entete(Fichier *fichier, int i)
 {
 
     switch(i)
@@ -116,7 +116,7 @@ int entete(L7OV7C *fichier, int i)
 
 
 /********************ecrirechaine*********************/
-void ecrire_chaine(L7OV7C *fichier,int n , int *i, int *j, char chaine[],int *cpt,Buffer *buf)
+void ecrire_chaine(Fichier *fichier,int n , int *i, int *j, char chaine[],int *cpt,Buffer *buf)
 {
 
     int k=0;
