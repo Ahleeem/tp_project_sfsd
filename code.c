@@ -193,6 +193,36 @@ void Sup(char *cle, char *nomfichier) {
         fermer(&F);
     }
 }
+//Fonction de recherche sans utiliser l'index
+void recherche(char nomfichier[], char cle[20], int *trouv, int *i, int *j ) {
+    Fichier F = ouvrir(nomfichier, "r");
+    Bloc buf;
+    Entete entete; // Utilisez la nouvelle déclaration de l'En-Tête ici
+    *i = 1;
+    lireBloc(&F, *i, &buf);
+    while ( *i < entete.nbbloc || *j != entete.indice_libre ) { // i<denierBloc OU j<>posLibre
+        // a chaque itération, on traite un enreg
+        char chLong[3];
+        recuperer_chaine(&F, 3, *i, j, chLong, &buf ); // récupère longueur de l'enreg
+        char eff[1];
+        recuperer_chaine(&F, 1, *i, j, eff, &buf ); // le car d'effacement
+        char chCle[20];
+        recuperer_chaine(&F, 20, *i, j, chCle, &buf ); // et la clé de l'enreg
+        if ( strcmp(chCle, cle) == 0 && eff[0] == 'N' )
+            *trouv = 1;
+        else {
+            // on passe au suivant
+            *j = *j + atoi(chLong); // on a deja lu les 20 car de la cle
+            if ( *j > b ) {
+                *j = 1;
+                *i = buf.Suiv;
+                lireBloc(&F, *i, &buf);
+            }
+        }
+    }
+    fermer(&F);
+}
+
 
 
 
@@ -388,7 +418,7 @@ void concat(char chaine[], int cle, char info[])  //  a inserer dans le ficheir 
     strcat(chaine,"f");                           // mise a jour du champs effacé
     strcat(chaine,ch_f);                          // construction de la chaine finale avec l'ordre suivant taille efface cle info
 
-    
+
 //----------------------------------- procedure qui transforme un nombre en chaine de caractère sur longueur de caractère-------------//
 void turn_to_string(char chaine[], int n, int longueur)
 {
