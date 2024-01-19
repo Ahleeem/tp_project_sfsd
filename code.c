@@ -405,21 +405,7 @@ void ecrire_chaine(Fichier *fichier,int n , int *i, int *j, char chaine[],int *c
 }
 
 
-
-/*************************conctat**************************/
-//-fonction qui permet de construire la chaine correspondant a la forme de l'enregistrememnt//
-void concat(char chaine[], int cle, char info[])  //  a inserer dans le ficheir a partir de la cle et de l'info
-{
-
-    char ch_f[100];
-    turn_to_string(ch_f,cle,5);                   // transformation de la cle en chaine sur 5 positions
-    strcat(ch_f,info);                            // concaténation de cle et info
-    turn_to_string(chaine,strlen(info),3);        // construction du debut de la chaine finale en commençant par la taille de l'info
-    strcat(chaine,"f");                           // mise a jour du champs effacé
-    strcat(chaine,ch_f);                          // construction de la chaine finale avec l'ordre suivant taille efface cle info
-
-
-//----------------------------------- procedure qui transforme un nombre en chaine de caractère sur longueur de caractère-------------//
+//----------------------------------- procedure qui transforme un nombre en chaine de caract�re sur longueur de caract�re-------------//
 void turn_to_string(char chaine[], int n, int longueur)
 {
 
@@ -432,6 +418,18 @@ void turn_to_string(char chaine[], int n, int longueur)
     chaine[longueur]='\0';             // fin de la chaine construite
 }
 
+
+/*************************conctat**************************/
+//-fonction qui permet de construire la chaine correspondant a la forme de l'enregistrememnt//
+void concat(char chaine[], int cle, char info[])  //  a inserer dans le ficheir a partir de la cle et de l'info
+{
+
+    char ch_f[100];
+    turn_to_string(ch_f,cle,5);                   // transformation de la cle en chaine sur 5 positions
+    strcat(ch_f,info);                            // concaténation de cle et info
+    turn_to_string(chaine,strlen(info),3);        // construction du debut de la chaine finale en commençant par la taille de l'info
+    strcat(chaine,"f");                           // mise a jour du champs effacé
+    strcat(chaine,ch_f);                          // construction de la chaine finale avec l'ordre suivant taille efface cle info
 
 
 
