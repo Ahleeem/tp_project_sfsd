@@ -2,26 +2,28 @@
 void insertion(Fichier *fichier, int cle, char *info)
 {
     int i,j,trouv=0,cpt;
-    Buffer buf;
-    
+    Buffer buf;                                     //Une structure qui représente un tampon ou un bloc de données.
+     //Alloue de la mémoire pour une chaîne de caractères qui sera utilisée pour stocker l'enregistrement à insérer
     char *cle_ch=malloc((sizeof(char))*100);            // la chaine qui va contenir l'enregistrement qui va etre inseré
-   
+  
     recherche(fichier,cle,&trouv,&i,&j);               // recherche de la cle pour eviter les  doublon
     if(entete(fichier,1)==0)                           // si la cle n'a  pas été trouvé alors on insere dans le premier bloc
-      aff_entete(fichier,1,1);
+      aff_entete(fichier,1,1);      // Si l'entête indique que le fichier est vide, alors on initialise l'entête
     if(trouv==0)
     {
         cpt=0;
-        i=entete(fichier,3);                                             // positionnement dans le queue
-        j=entete(fichier,4);                                             // positionnnement a la position libre dans le bloc de queue
-        liredir(fichier,i,&buf);                                          // lecture du  bloc
-        sprintf(cle_ch,"%s","");                                         //convertir en chaine
-        concat(cle_ch,cle,info);                                       // creation de l'enregistrement
-        ecrire_chaine(fichier,strlen(cle_ch),&i,&j,cle_ch,&cpt,&buf);   // ecriture de la chaine construite
+        i=entete(fichier,3);                             // positionnement dans le queue
+        j=entete(fichier,4);                            // positionnnement a la position libre dans le bloc de queue
+        liredir(fichier,i,&buf);                       // lecture du  bloc actuel
+        sprintf(cle_ch,"%s","");                      //convertir en chaine
+        concat(cle_ch,cle,info);                     //Concaténation de la clé et de l'information pour former l'enregistrement.    
+                                                    // creation de l'enregistrement
+        ecrire_chaine(fichier,strlen(cle_ch),&i,&j,cle_ch,&cpt,&buf);   // ecriture de la chaine construite dans le bloc actuel
         
         //ecriredir(fichier,i,&buf);                                    // ecriture du dernier bloc 
         aff_entete(fichier,3,i);                                        // mise a jour de la quee
         aff_entete(fichier,4,j);                                        // mise a jour de la position libre
+        // Mise à jour des entêtes pour refléter la nouvelle position dans la queue et la nouvelle position libre dans le bloc.
     }
     else
     {
