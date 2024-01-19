@@ -50,9 +50,8 @@ f.file = fopen(nom, mode);
         f.entete[i] = 0;
     }
     return f;
-
-
 }
+
 //implementation de la fonction ecrire
 void ecrireBloc(Fichier *f, int i, Bloc *buffer) {
     if (f->file != NULL) {
@@ -64,8 +63,9 @@ void ecrireBloc(Fichier *f, int i, Bloc *buffer) {
         }
     }
 }
+
 //Implementation d'un fonction necessaire dans la fonction de recherche
-void recuperer_chaine( int n, int i, int *j, char *ch, Bloc *buf ) {
+void recuperer_chaine(Fichier *f, int n, int i, int *j, char *ch, Bloc *buf ) {
     int k;
     for (k = 0; k < n; k++) {
         ch[k] = buf->tab[*j];
@@ -73,11 +73,12 @@ void recuperer_chaine( int n, int i, int *j, char *ch, Bloc *buf ) {
         if (*j > b) {
             *j = 1;
             i = buf->Suiv;
-            lireBloc(&F, i, buf);
+            lireBloc(f, i, buf);
         }
     }
     ch[k] = '\0';
 }
+
 //ajout  d'une var taille pour pouvoire rajouter des elements a l'index en incrementant la taille
 void construireIndex(Fichier *f, Tcouple *Index, int *taille) {
     int i = 1, j = 1;
@@ -85,11 +86,11 @@ void construireIndex(Fichier *f, Tcouple *Index, int *taille) {
     lireBloc(f, i, &buf);
     while (i < entete(f, 1) || j != entete(f, 2)) {
         char chLong[3];
-        recuperer_chaine(3, i, &j, chLong, &buf);
+        recuperer_chaine(f, 3, i, &j, chLong, &buf);
         char eff[1];
-        recuperer_chaine(1, i, &j, eff, &buf);
+        recuperer_chaine(f, 1, i, &j, eff, &buf);
         char chCle[20];
-        recuperer_chaine(20, i, &j, chCle, &buf);
+        recuperer_chaine(f, 20, i, &j, chCle, &buf);
         if (eff[0] == 'N') {
         strcpy(Index[*taille].cle, chCle);
         Index[*taille].tete = malloc(sizeof(Maillon));
@@ -106,6 +107,7 @@ void construireIndex(Fichier *f, Tcouple *Index, int *taille) {
         }
     }
 }
+
 //code a ajouter dans la fonction d'insertion pour mettre a joure l'index apres chaques insertion
 /*Ajout dans l'entete de la fonction du parametre index et modification du corp
 void ajouterValeur(Fichier *f, char *cle, Tcouple *Index, int *taille)
@@ -115,12 +117,11 @@ void ajouterValeur(Fichier *f, char *cle, Tcouple *Index, int *taille)
     Index[*taille].tete->val.depl = ;
     Index[*taille].tete->adr = NULL;
     (*taille)++;*/
-    //implementation de la fonction de recherche en utilisant l'index
-    //si la valeur ne se trouve pas (alors on sort la valeur n'existe pas on fait pas de recherche sequentielle comme mom code precedant.
+
 void Recherche_Liste_Variable_NonOrdonnee(char *nom_f, char *cle, Tcouple *Index, int taille, int *trouv, int *ind, int *i, int *j) {
     Fichier F = ouvrir(nom_f, "r");
     Bloc buf;
-*i = 1;
+    *i = 1;
     lireBloc(&F, *i, &buf);
     //recherche dans l'index
     *ind = 0;
@@ -135,27 +136,28 @@ void Recherche_Liste_Variable_NonOrdonnee(char *nom_f, char *cle, Tcouple *Index
         *trouv = 1;
     } else {
         *trouv = 0;
+        char eff[1]; // Ajout de la déclaration de eff
         while (*i < entete(&F,1) || *j != entete(&F,2)) {
             char chLong[3];
-            recuperer_chaine(3, *i, j, chLong, &buf);
-            recuperer_chaine(1, *i, j, eff, &buf);
+            recuperer_chaine(&F, 3, *i, j, chLong, &buf);
+            recuperer_chaine(&F, 1, *i, j, eff, &buf);
             char chCle[20];
-            recuperer_chaine(20, *i, j, chCle, &buf);
+            recuperer_chaine(&F, 20, *i, j, chCle, &buf);
             if (strcmp(chCle, cle) == 0 && eff[0] == 'N') {
                 *trouv =1;
             } else {
-
                 *j = *j + atoi(chLong);
                 if (*j > b) {
-                *j = 1;
-                *i = buf.Suiv;
-                lireBloc(&F, *i, &buf);
-                            }
-              }
+                    *j = 1;
+                    *i = buf.Suiv;
+                    lireBloc(&F, *i, &buf);
+                }
+            }
         }
     }
     fermer(&F);
 }
+
 
  //implementation de la focntion de suppression logique
  //N veut dire non efface et E veut dire efface
@@ -167,7 +169,7 @@ void Sup(char *cle, char *nomfichier) {
         Bloc buf;
         lireBloc(&F, i, &buf);
         char ch[3];
-        recuperer_chaine(3, i, &j, ch, &buf);
+        recuperer_chaine(&F, 3, i, &j, ch, &buf);
         if (j <= b) {
             buf.tab[j] = 'E';
         } else {
