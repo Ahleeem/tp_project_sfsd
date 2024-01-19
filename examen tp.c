@@ -70,7 +70,7 @@ void fermer(Fichier *fichier)
     liredir(fichier, 0, &buf_temp);
 
     // ecriture de l'entete dans le tampon temporaire
-    memcpy(buf_temp.tab, &(fichier->entete), sizeof(Entete));
+    memcpy(buf_temp.tab, &(fichier->entete));
 
     // Reecriture du tampon temporaire dans le fichier
     ecriredir(fichier, 0, &buf_temp);
@@ -85,7 +85,7 @@ void liredir(Fichier *fichier, int i, Buffer *buf)
     Buffer buf_temp;
 
     // Positionnement au debut du bloc numero i
-    fseek(fichier->fich, sizeof(Entete) + sizeof(Tbloc) * (i - 1), SEEK_SET);
+    fseek(fichier->fich,  sizeof(Bloc) * (i - 1), SEEK_SET);
 
     // Lecture d'un bloc de caracteres correspondant a la taille du bloc dans le tampon temporaire
     if (fread(&buf_temp, sizeof(Buffer), 1, fichier->fich) != 1) {
