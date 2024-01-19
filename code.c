@@ -5,21 +5,28 @@
 #define b 512 //taille du bloc
 #define MaxIndex 100
 
-/*les caracteristiques sont:
-1- Numéro du premier bloc .
-2-Numéro du dernier bloc.
-3-La 1ère position libre dans le dernier bloc.
-4-Le nombre de caractères perdus suite aux suppressions logiques.*/
 typedef struct {
     char tab[b];//tableau de caracteres
     int Suiv;//num du bloc suivant
 } Bloc;
 typedef struct Bloc Buffer;  // declaration du tampon
+
+typedef struct Entete        // structure de l'entete du fichier en mémoire centrale
+{
+    int nbbloc;
+    int tete;
+    int queue;
+    int indice_libre;   // l'indice libre dans le bloc de la queue
+    int nb_car_sup;
+
+}Entete;
+
 typedef struct {
     FILE *file;
-    int entete[4];//entete contient 4 caracteristiques
+    Entete entete;
 
 } Fichier;
+
 //declaration de l'index
 //l'index est un index dense de type liste chainee
 typedef struct maillon {
@@ -38,21 +45,21 @@ typedef struct {
 
 Tcouple Index[MaxIndex];
 
-//implementation de la fonction ouvrir
 Fichier ouvrir(char *nom, char *mode) {
-Fichier f;
-f.file = fopen(nom, mode);
+    Fichier f;
+    f.file = fopen(nom, mode);
     if (f.file == NULL) {
         perror("erreur d'ouverture du fichier");
         exit(EXIT_FAILURE);
     }
-     for (int i = 0; i < 4; i++) {
-        f.entete[i] = 0;
-    }
+    f.entete.nbbloc = 0;
+    f.entete.tete = 0;
+    f.entete.queue = 0;
+    f.entete.indice_libre = 0;
+    f.entete.nb_car_sup = 0;
     return f;
 }
 
-//implementation de la fonction ecrire
 void ecrireBloc(Fichier *f, int i, Bloc *buffer) {
     if (f->file != NULL) {
         fseek(f->file, i * sizeof(Bloc), SEEK_SET);
@@ -64,7 +71,6 @@ void ecrireBloc(Fichier *f, int i, Bloc *buffer) {
     }
 }
 
-//Implementation d'un fonction necessaire dans la fonction de recherche
 void recuperer_chaine(Fichier *f, int n, int i, int *j, char *ch, Bloc *buf ) {
     int k;
     for (k = 0; k < n; k++) {
@@ -79,12 +85,11 @@ void recuperer_chaine(Fichier *f, int n, int i, int *j, char *ch, Bloc *buf ) {
     ch[k] = '\0';
 }
 
-//ajout  d'une var taille pour pouvoire rajouter des elements a l'index en incrementant la taille
 void construireIndex(Fichier *f, Tcouple *Index, int *taille) {
     int i = 1, j = 1;
     Bloc buf;
     lireBloc(f, i, &buf);
-    while (i < entete(f, 1) || j != entete(f, 2)) {
+    while (i < f->entete.nbbloc || j != f->entete.indice_libre) {
         char chLong[3];
         recuperer_chaine(f, 3, i, &j, chLong, &buf);
         char eff[1];
@@ -92,11 +97,11 @@ void construireIndex(Fichier *f, Tcouple *Index, int *taille) {
         char chCle[20];
         recuperer_chaine(f, 20, i, &j, chCle, &buf);
         if (eff[0] == 'N') {
-        strcpy(Index[*taille].cle, chCle);
-        Index[*taille].tete = malloc(sizeof(Maillon));
-        Index[*taille].tete->val.numblc = i;
-        Index[*taille].tete->val.depl=j - 20;
-        Index[*taille].tete->adr = NULL;
+            strcpy(Index[*taille].cle, chCle);
+            Index[*taille].tete = malloc(sizeof(Maillon));
+            Index[*taille].tete->val.numblc = i;
+            Index[*taille].tete->val.depl=j - 20;
+            Index[*taille].tete->adr = NULL;
             (*taille)++;
         }
         j = j+atoi(chLong);
@@ -107,16 +112,6 @@ void construireIndex(Fichier *f, Tcouple *Index, int *taille) {
         }
     }
 }
-
-//code a ajouter dans la fonction d'insertion pour mettre a joure l'index apres chaques insertion
-/*Ajout dans l'entete de la fonction du parametre index et modification du corp
-void ajouterValeur(Fichier *f, char *cle, Tcouple *Index, int *taille)
-    strcpy(Index[*taille].cle, cle);
-    Index[*taille].tete = malloc(sizeof(Maillon));
-    Index[*taille].tete->val.numblc =// num bloc de la valeur inseree;
-    Index[*taille].tete->val.depl = ;
-    Index[*taille].tete->adr = NULL;
-    (*taille)++;*/
 
 void Recherche_Liste_Variable_NonOrdonnee(char *nom_f, char *cle, Tcouple *Index, int taille, int *trouv, int *ind, int *i, int *j) {
     Fichier F = ouvrir(nom_f, "r");
@@ -137,7 +132,7 @@ void Recherche_Liste_Variable_NonOrdonnee(char *nom_f, char *cle, Tcouple *Index
     } else {
         *trouv = 0;
         char eff[1]; // Ajout de la déclaration de eff
-        while (*i < entete(&F,1) || *j != entete(&F,2)) {
+        while (*i < F.entete.nbbloc || *j != F.entete.indice_libre) {
             char chLong[3];
             recuperer_chaine(&F, 3, *i, j, chLong, &buf);
             recuperer_chaine(&F, 1, *i, j, eff, &buf);
@@ -158,9 +153,6 @@ void Recherche_Liste_Variable_NonOrdonnee(char *nom_f, char *cle, Tcouple *Index
     fermer(&F);
 }
 
-
- //implementation de la focntion de suppression logique
- //N veut dire non efface et E veut dire efface
 void Sup(char *cle, char *nomfichier) {
     int trouv, i, j, ind;
     Recherche_Liste_Variable_NonOrdonnee(nomfichier, cle, Index, MaxIndex, &trouv, &ind, &i, &j);
@@ -178,11 +170,11 @@ void Sup(char *cle, char *nomfichier) {
             buf.tab[1] = 'E';
         }
         ecrireBloc(&F, i, &buf);
-        affecterEntete(&F, 4, entete(&F, 4) + atoi(ch) + 4);//update de l'entete
+        F.entete.nb_car_sup += atoi(ch) + 4;//update de l'entete
 
         //Mise a jour de l'index apres la suppression
-    Maillon *courant = Index[ind].tete;
-    Maillon *precedent = NULL;
+        Maillon *courant = Index[ind].tete;
+        Maillon *precedent = NULL;
         while (courant != NULL) {
             if (courant->val.numblc == i && courant->val.depl == j - 20) {
                 if (precedent == NULL) {
@@ -198,8 +190,10 @@ void Sup(char *cle, char *nomfichier) {
         }
 
         fermer(&F);
+    }
 }
-}
+
+
 //******************allouer et liberer********************************
 void  alloc_bloc(Fichier *fichier)
 {
@@ -254,7 +248,7 @@ void insertion(Fichier *fichier, int cle, char *info)
     Buffer buf;                                     //Une structure qui représente un tampon ou un bloc de données.
      //Alloue de la mémoire pour une chaîne de caractères qui sera utilisée pour stocker l'enregistrement à insérer
     char *cle_ch=malloc((sizeof(char))*100);            // la chaine qui va contenir l'enregistrement qui va etre inseré
-  
+
     recherche(fichier,cle,&trouv,&i,&j);               // recherche de la cle pour eviter les  doublon
     if(entete(fichier,1)==0)                           // si la cle n'a  pas été trouvé alors on insere dans le premier bloc
       aff_entete(fichier,1,1);      // Si l'entête indique que le fichier est vide, alors on initialise l'entête
@@ -265,11 +259,11 @@ void insertion(Fichier *fichier, int cle, char *info)
         j=entete(fichier,4);                            // positionnnement a la position libre dans le bloc de queue
         liredir(fichier,i,&buf);                       // lecture du  bloc actuel
         sprintf(cle_ch,"%s","");                      //convertir en chaine
-        concat(cle_ch,cle,info);                     //Concaténation de la clé et de l'information pour former l'enregistrement.    
+        concat(cle_ch,cle,info);                     //Concaténation de la clé et de l'information pour former l'enregistrement.
                                                     // creation de l'enregistrement
         ecrire_chaine(fichier,strlen(cle_ch),&i,&j,cle_ch,&cpt,&buf);   // ecriture de la chaine construite dans le bloc actuel
-        
-        //ecriredir(fichier,i,&buf);                                    // ecriture du dernier bloc 
+
+        //ecriredir(fichier,i,&buf);                                    // ecriture du dernier bloc
         aff_entete(fichier,3,i);                                        // mise a jour de la quee
         aff_entete(fichier,4,j);                                        // mise a jour de la position libre
         // Mise à jour des entêtes pour refléter la nouvelle position dans la queue et la nouvelle position libre dans le bloc.
@@ -349,7 +343,7 @@ int entete(Fichier *fichier, int i)
         }break;
          case 5:
         {
-            return(fichier->entete.nb_car_sup); // nb carac supremer //A confimer si on a besoin 
+            return(fichier->entete.nb_car_sup); // nb carac supremer //A confimer si on a besoin
         }break;
 
     };
@@ -366,7 +360,7 @@ void ecrire_chaine(Fichier *fichier,int n , int *i, int *j, char chaine[],int *c
 {
 
     int k=0;
-    (*cpt)=0;                         // nombre de bloc ajoutés 
+    (*cpt)=0;                         // nombre de bloc ajoutés
     for(k=0;k<n;k++)                // k pour le deplacement dans la chaine
     {
         if((*j)<=98)                //si je suis toujours dans le bloc conserné
