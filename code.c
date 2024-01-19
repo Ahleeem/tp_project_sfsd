@@ -1,3 +1,4 @@
+/***************************may*************************/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -194,23 +195,25 @@ void Sup(char *cle, char *nomfichier) {
 }
 
 
+
+/**********************ahlem********************************************/
 //******************allouer et liberer********************************
 void  alloc_bloc(Fichier *fichier)
 {
 
-        Buffer *buf=malloc(sizeof(Buffer));        // allocation du Buffer
+        Bloc *buf=malloc(sizeof(Bloc));        // allocation du Buffer
         liredir(fichier,entete(fichier,3),buf);    // lecture du bloc correspondant a la queue
-        buf->suivant=entete(fichier,1)+1;          // mise a jour du suivant de la queue au bloc correspondant a la nouvelle queue
+        buf->Suiv=entete(fichier,1)+1;          // mise a jour du suivant de la queue au bloc correspondant a la nouvelle queue
         ecriredir(fichier,entete(fichier,3),buf);  // ecriture du bloc de queue dans le fichier
         aff_entete(fichier,3,entete(fichier,1)+1);// mise a jour du numero du bloc correspondant a la nouvelle queue dans l'entete
-        buf->suivant=-1;                          // mise a jour du suivant a nill
+        buf->Suiv=-1;                          // mise a jour du suivant a nill
         sprintf(buf->tab,"%s","");                // vider la chaine du buffer  apres convertion
         ecriredir(fichier,entete(fichier,3),buf); // ecriture du buffer dans le bloc representatnt la nouvelle queue
         aff_entete(fichier,1,entete(fichier,1)+1); // incrémentation du nombre de bloc alloués
 }
 
 
-
+/*
 void libererBloc(Fichier *f, int i) {
     Bloc buffer;
     lireBloc(f, i, &buffer);    // Lire le bloc à libérer
@@ -219,7 +222,7 @@ void libererBloc(Fichier *f, int i) {
     ecrireBloc(f, i, &buffer);   // Écrire le bloc libéré dans le fichier
     affecterEntete(f, 1, i);      // Le nouveau premier bloc libre est le bloc libéré
 }
-
+*/
 //*********************creation*****************************
 void creation_fichier(Fichier *fichier,int n)
 {
@@ -245,7 +248,7 @@ void creation_fichier(Fichier *fichier,int n)
 void insertion(Fichier *fichier, int cle, char *info)
 {
     int i,j,trouv=0,cpt;
-    Buffer buf;                                     //Une structure qui représente un tampon ou un bloc de données.
+    Bloc buf;                                     //Une structure qui représente un tampon ou un bloc de données.
      //Alloue de la mémoire pour une chaîne de caractères qui sera utilisée pour stocker l'enregistrement à insérer
     char *cle_ch=malloc((sizeof(char))*100);            // la chaine qui va contenir l'enregistrement qui va etre inseré
 
@@ -311,13 +314,6 @@ void aff_entete(Fichier *fichier,int i , int valeur)
 }
 
 
-
-
-
-
-
-
-
 /******************entete**************************/
 //permet d'obtenir les elements de l'entete du ficher
 int entete(Fichier *fichier, int i)
@@ -351,12 +347,8 @@ int entete(Fichier *fichier, int i)
 
 
 
-
-
-
-
 /********************ecrirechaine*********************/
-void ecrire_chaine(Fichier *fichier,int n , int *i, int *j, char chaine[],int *cpt,Buffer *buf)
+void ecrire_chaine(Fichier *fichier,int n , int *i, int *j, char chaine[],int *cpt,Bloc *buf)
 {
 
     int k=0;
@@ -384,9 +376,6 @@ void ecrire_chaine(Fichier *fichier,int n , int *i, int *j, char chaine[],int *c
 
 
 
-
-
-
 /*************************conctat**************************/
 //-fonction qui permet de construire la chaine correspondant a la forme de l'enregistrememnt//
 void concat(char chaine[], int cle, char info[])  //  a inserer dans le ficheir a partir de la cle et de l'info
@@ -398,7 +387,124 @@ void concat(char chaine[], int cle, char info[])  //  a inserer dans le ficheir 
     turn_to_string(chaine,strlen(info),3);        // construction du debut de la chaine finale en commençant par la taille de l'info
     strcat(chaine,"f");                           // mise a jour du champs effacé
     strcat(chaine,ch_f);                          // construction de la chaine finale avec l'ordre suivant taille efface cle info
+
+    
+//----------------------------------- procedure qui transforme un nombre en chaine de caractère sur longueur de caractère-------------//
+void turn_to_string(char chaine[], int n, int longueur)
+{
+
+    int k;
+    for(k=longueur-1;k>=0;k--)          // on commence par le poids faible du nombre qui va etre mi a chaine[longueur-1]
+    {
+        chaine[k]=(n%10)+'0';           // extraction chiffre par chiffre  grace au mod par 10 et ajout du code ascii du zero afoin d'obtenir le code ascii correspondant au chiffre obtenu
+        n=n/10;                        // on passe au chiffre suivant
+    }
+    chaine[longueur]='\0';             // fin de la chaine construite
 }
+
+
+
+
+//----------------------------------affichage du bloc----------------------------------------------------
+void afficher_bloc(Fichier *fichier,int i)
+{
+    Bloc buf;
+    liredir(fichier,i,&buf); //lecture du ieme bloc
+    printf("le tableau de caractères de bloc %d contient\n\n",i);
+    printf("%s\n",buf.tab); //affichage de la chaine de carctères contenue
+    printf(" le suivant du bloc %d  est %d\n",i,buf.Suiv); // affichage du suivant
+
+}
+
+//------------------------ affichage du ficher----------------------------------------------------------------//
+void afficher_fichier(Fichier *fichier)
+{
+    int i=entete(fichier,2); // positionnement a la tete du fichier
+    int j=0;                  // positionnement au premier caractère
+    int stop=0;
+    Bloc buf;
+    char *ch1=malloc(sizeof(char)*3);
+    char *ch2=malloc(sizeof(char));
+    char *ch3=malloc(sizeof(char)*5);
+    char *ch4=malloc(sizeof(char)*100);
+    liredir(fichier,i,&buf);    // lecture du premier bloc
+  if(entete(fichier,1)!=0)
+  {
+    while(!stop)
+    {
+        recuperer_chaine(fichier,3,&i,&j,ch1,&buf); // on commence a recuperer les enregistrememnt un a un
+        recuperer_chaine(fichier,1,&i,&j,ch2,&buf);
+        recuperer_chaine(fichier,5,&i,&j,ch3,&buf);
+        recuperer_chaine(fichier,atoi(ch1),&i,&j,ch4,&buf);
+        if(strcmp(ch2,"f")==0) //. si l'info n' pas ete supprimé logiquement
+        {
+            printf("%s%s%s%s",ch1,ch2,ch3,ch4); //impression de la totalité de l'enregistrement
+
+        }
+        if((i==entete(fichier,3)) && (j==entete(fichier,4))) // si on est la fin du ficher on arrete
+        {
+            stop=1;
+        }
+        system("pause");
+    }
+  }
+  else
+  {
+      printf("fichier vide");
+  }
+}
+
+
+void afficher_entete(Fichier *fichier) // affichage de l'entete
+{
+    printf("\nles ceratctéristiques du fiocher sont les suivantes\n--------------------------------------------");
+    printf("le nombre total de bloc alloué est   %d\n",entete(fichier,1));
+    printf("l'entete du ficher se trouve au bloc    %d\n",entete(fichier,2));
+    printf("la queue du ficher se trouve au bloc    %d\n",entete(fichier,3));
+    printf("la postion libre dans le bloc de queue est    %d\n",entete(fichier,4));
+    printf("le nombre total de caractère supprimé est    %d\n",entete(fichier,5));
+}
+
+
+//**************************fonction de verification de la cle*************//
+int nb_pos(int a)
+{
+    int cpt=1;
+    while((a/10)!=0)
+    {
+        a=a/10 ;
+        cpt++ ;
+    }
+   return(cpt);
+}
+
+
+
+int cle_correct(int cle)
+{
+  int  correct=0 ;
+  if(nb_pos(cle)>5)
+
+  {
+      puts("cle n'est pas correct") ;
+  }
+  return(correct) ;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+//***************************inas*************************************
+
 /**************suppression phy************************/
 void suppression_physique_L7OV7C(Fichier *fichier, char *nom_physique)
 {
