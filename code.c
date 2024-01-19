@@ -232,13 +232,13 @@ void  alloc_bloc(Fichier *fichier)
 {
 
         Bloc *buf=malloc(sizeof(Bloc));        // allocation du Buffer
-        liredir(fichier,entete(fichier,3),buf);    // lecture du bloc correspondant a la queue
+        lireBloc(fichier,entete(fichier,3),buf);    // lecture du bloc correspondant a la queue
         buf->Suiv=entete(fichier,1)+1;          // mise a jour du suivant de la queue au bloc correspondant a la nouvelle queue
-        ecriredir(fichier,entete(fichier,3),buf);  // ecriture du bloc de queue dans le fichier
+        ecrireBloc(fichier,entete(fichier,3),buf);  // ecriture du bloc de queue dans le fichier
         aff_entete(fichier,3,entete(fichier,1)+1);// mise a jour du numero du bloc correspondant a la nouvelle queue dans l'entete
         buf->Suiv=-1;                          // mise a jour du suivant a nill
         sprintf(buf->tab,"%s","");                // vider la chaine du buffer  apres convertion
-        ecriredir(fichier,entete(fichier,3),buf); // ecriture du buffer dans le bloc representatnt la nouvelle queue
+        ecrireBloc(fichier,entete(fichier,3),buf); // ecriture du buffer dans le bloc representatnt la nouvelle queue
         aff_entete(fichier,1,entete(fichier,1)+1); // incrémentation du nombre de bloc alloués
 }
 
@@ -290,7 +290,7 @@ void insertion(Fichier *fichier, int cle, char *info)
         cpt=0;
         i=entete(fichier,3);                             // positionnement dans le queue
         j=entete(fichier,4);                            // positionnnement a la position libre dans le bloc de queue
-        liredir(fichier,i,&buf);                       // lecture du  bloc actuel
+        lireBloc(fichier,i,&buf);                       // lecture du  bloc actuel
         sprintf(cle_ch,"%s","");                      //convertir en chaine
         concat(cle_ch,cle,info);                     //Concaténation de la clé et de l'information pour former l'enregistrement.
                                                     // creation de l'enregistrement
@@ -392,7 +392,7 @@ void ecrire_chaine(Fichier *fichier,int n , int *i, int *j, char chaine[],int *c
         }
         else                          // si la chaine a inserer depasse le buffer
          {
-            ecriredir(fichier,*i,buf);  // ecriture du precedent buffer dans le fichier
+            ecrireBloc(fichier,*i,buf);  // ecriture du precedent buffer dans le fichier
             alloc_bloc(fichier);        // allocation d'un nouveau bloc afin de recevoir le reste de la chaine
             buf->tab[0]=chaine[k];      // ecrtiture du k°eme caractère de la chaine dans la position 0
             (*j)=1;                     // passage a la position 1
@@ -439,7 +439,7 @@ void turn_to_string(char chaine[], int n, int longueur)
 void afficher_bloc(Fichier *fichier,int i)
 {
     Bloc buf;
-    liredir(fichier,i,&buf); //lecture du ieme bloc
+    lireBloc(fichier,i,&buf); //lecture du ieme bloc
     printf("le tableau de caractères de bloc %d contient\n\n",i);
     printf("%s\n",buf.tab); //affichage de la chaine de carctères contenue
     printf(" le suivant du bloc %d  est %d\n",i,buf.Suiv); // affichage du suivant
@@ -457,7 +457,7 @@ void afficher_fichier(Fichier *fichier)
     char *ch2=malloc(sizeof(char));
     char *ch3=malloc(sizeof(char)*5);
     char *ch4=malloc(sizeof(char)*100);
-    liredir(fichier,i,&buf);    // lecture du premier bloc
+    lireBloc(fichier,i,&buf);    // lecture du premier bloc
   if(entete(fichier,1)!=0)
   {
     while(!stop)
@@ -538,7 +538,7 @@ int cle_correct(int cle)
 /**************suppression phy************************/
 void suppression_physique_L7OV7C(Fichier *fichier, char *nom_physique)
 {
-    Buffer buf1, buf2;
+    Bloc buf1, buf2;
     Fichier *fichier2;
     int bloc1, bloc2, pos1, pos2, cpt = 0;
     char *ch1 = malloc(sizeof(char) * 3);
@@ -552,7 +552,7 @@ void suppression_physique_L7OV7C(Fichier *fichier, char *nom_physique)
     aff_entete(fichier2, 1, 1);
     bloc2 = 1;
     pos2 = 0;
-    liredir(fichier, bloc1, &buf1); // lecture du premier bloc dans le fichier 1
+    lireBloc(fichier, bloc1, &buf1); // lecture du premier bloc dans le fichier 1
     int stop = 0;
 
     while (bloc1 != 0 && pos1 != -1)
@@ -579,42 +579,38 @@ void suppression_physique_L7OV7C(Fichier *fichier, char *nom_physique)
             break;
         }
 
-        liredir(fichier, bloc1, &buf1); // lecture du bloc suivant
+        lireBloc(fichier, bloc1, &buf1); // lecture du bloc suivant
     }
 
-    ecriredir(fichier2, bloc2, &buf2);
+    ecrireBloc(fichier2, bloc2, &buf2);
     fermer(fichier2);
 }
 /**************fermeture****************/
 void fermer(Fichier *fichier)
 {
     // Repositionnement du curseur en debut de fichier
-    rewind(fichier->fich);
+    rewind(fichier->file);
 
     // Utilisation d'un tampon temporaire pour eviter le chevauchement
-    Buffer buf_temp;
-    liredir(fichier, 0, &buf_temp);
-
-    // ecriture de l'entete dans le tampon temporaire
-    memcpy(buf_temp.tab, &(fichier->entete));
-
+    Bloc buf_temp;
+    lireBloc(fichier, 0, &buf_temp);
     // Reecriture du tampon temporaire dans le fichier
-    ecriredir(fichier, 0, &buf_temp);
+    ecrireBloc(fichier, 0, &buf_temp);
 
     // Fermeture du fichier
-    fclose(fichier->fich);
+    fclose(fichier->file);
 }
 /******************fonction de lecture************************/
-void liredir(Fichier *fichier, int i, Buffer *buf)
+void lireBloc(Fichier *fichier, int i, Bloc *buf)
 {
     // Utilisation d'un tampon temporaire pour eviter le chevauchement
-    Buffer buf_temp;
+    Bloc buf_temp;
 
     // Positionnement au debut du bloc numero i
-    fseek(fichier->fich,  sizeof(Bloc) * (i - 1), SEEK_SET);
+    fseek(fichier->file,  sizeof(Bloc) * (i - 1), SEEK_SET);
 
     // Lecture d'un bloc de caracteres correspondant a la taille du bloc dans le tampon temporaire
-    if (fread(&buf_temp, sizeof(Buffer), 1, fichier->fich) != 1) {
+    if (fread(&buf_temp, sizeof(Bloc), 1, fichier->file) != 1) {
         // Gestion d'erreur lors de la lecture
         perror("Erreur lors de la lecture du bloc");
         // Autres actions necessaires en cas d'erreur
