@@ -546,7 +546,7 @@ void suppression_physique_L7OV7C(Fichier *fichier, char *nom_physique)
     char *ch3 = malloc(sizeof(char) * 5);
     char *ch4 = malloc(sizeof(char) * 50);
     char *chaine = malloc(sizeof(char) * 100);
-    fichier2 = ouvrir(nom_physique, 'n'); // ouverture du fichier
+    *fichier2 = ouvrir(nom_physique, 'n'); // ouverture du fichier
     bloc1 = entete(fichier, 2);
     pos1 = 0;
     aff_entete(fichier2, 1, 1);
