@@ -3,36 +3,18 @@
 #include<stdlib.h>
 #include<string.h>
 
-typedef struct Tbloc
-{
-    char tab[100];  // le tableau de caractere
-    int suivant;    // le numero du bloc suivant dans la liste
-}Tbloc;
-
-typedef struct Tbloc Buffer;  // declaration du tampon
-
-
-typedef struct Entete        // structure de l'entete du fichier en memoire centrale
-{
-    int nbbloc;
-    int tete;
-    int queue;
-    int indice_libre;   // l'indice libre dans le bloc de la queue
-    int nb_car_sup;
-
-}Entete;
-
-typedef struct L7OV7C
+typedef struct Bloc Buffer;  // declaration du tampon
+typedef struct Fichier
 {
     FILE *fich;
-    Entete entete;
-}L7OV7C;
+    int entete[4];
+}Fichier;
 
 
-void suppression_physique_L7OV7C(L7OV7C *fichier, char *nom_physique)
+void suppression_physique_L7OV7C(Fichier *fichier, char *nom_physique)
 {
     Buffer buf1, buf2;
-    L7OV7C *fichier2;
+    Fichier *fichier2;
     int bloc1, bloc2, pos1, pos2, cpt = 0;
     char *ch1 = malloc(sizeof(char) * 3);
     char *ch2 = malloc(sizeof(char));
@@ -78,7 +60,7 @@ void suppression_physique_L7OV7C(L7OV7C *fichier, char *nom_physique)
     ecriredir(fichier2, bloc2, &buf2);
     fermer(fichier2);
 }
-void fermer(L7OV7C *fichier)
+void fermer(Fichier *fichier)
 {
     // Repositionnement du curseur en debut de fichier
     rewind(fichier->fich);
@@ -97,7 +79,7 @@ void fermer(L7OV7C *fichier)
     fclose(fichier->fich);
 }
 
-void liredir(L7OV7C *fichier, int i, Buffer *buf)
+void liredir(Fichier *fichier, int i, Buffer *buf)
 {
     // Utilisation d'un tampon temporaire pour eviter le chevauchement
     Buffer buf_temp;
