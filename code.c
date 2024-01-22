@@ -614,4 +614,18 @@ void lireBloc(Fichier *fichier, int i, Bloc *buf)
         // Autres actions necessaires en cas d'erreur
         return;
     }
+/******************mise a jour d'index*********************/
+/*
+void mettre_a_jour_index(Fichier *fichier, Index *index, int nouveau_numero_bloc, int nouvelle_position) {
+    index->numero_bloc = nouveau_numero_bloc;
+    index->position = nouvelle_position;
 
+    // Enregistrez cet index dans le fichier, vous devrez ajuster cela en fonction de votre structure de données
+    // Supposons que vous avez un bloc spécifique pour l'index (par exemple, le premier bloc)
+    Buffer buf_index;
+    // Copiez l'index dans le tampon
+    memcpy(buf_index.tab, index, sizeof(Index));
+    // Écrivez le tampon dans le fichier
+    ecriredir(fichier, 1, &buf_index);  // Ici, 1 est le numéro du bloc pour l'index, ajustez selon votre structure
+}
+*/
