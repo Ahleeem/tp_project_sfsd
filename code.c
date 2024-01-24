@@ -605,7 +605,7 @@ void lireBloc(Fichier *fichier, int i, Bloc *buf)
     Bloc buf_temp;
 
     // Positionnement au debut du bloc numero i
-    fseek(fichier->file,(sizeof(Entete)+sizeof(Bloc) * (i - 1), SEEK_SET);
+    fseek(fichier->file,(sizeof(Entete)+sizeof(Bloc)) * (i - 1), SEEK_SET);
    fread(buf,sizeof(Buffer),1,fichier->file); // Lecture d'un bloc de caracteres correspondant a la taille du bloc dans le tampon temporaire
        rewind(fichier->file);   // repositionnement endebut de fichier
    if (fread(&buf_temp, sizeof(Bloc), 1, fichier->file) != 1) {
