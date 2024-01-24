@@ -427,7 +427,11 @@ void concat(char chaine[], int cle, char info[])  //  a inserer dans le ficheir 
     strcat(ch_f,info);                            // concaténation de cle et info
     turn_to_string(chaine,strlen(info),3);        // construction du debut de la chaine finale en commençant par la taille de l'info
     strcat(chaine,"f");                           // mise a jour du champs effacé
+<<<<<<< HEAD
     strcat(chaine,ch_f);     }                     // construction de la chaine finale avec l'ordre suivant taille efface cle info
+=======
+    strcat(chaine,ch_f);                          // construction de la chaine finale avec l'ordre suivant taille efface cle info
+>>>>>>> b4b0d6dd6ca16dd20f31e45997149a94ae9edd75
 
 
 
@@ -596,6 +600,7 @@ void fermer(Fichier *fichier)
     // Fermeture du fichier
     fclose(fichier->file);
 }
+<<<<<<< HEAD
 
 void lireBloc(Fichier *fichier, int i, Bloc *buf)
 {
@@ -656,3 +661,22 @@ int main() {
     return 0;
 }
 
+=======
+/******************fonction de lecture************************/
+void lireBloc(Fichier *fichier, int i, Bloc *buf)
+{
+    // Utilisation d'un tampon temporaire pour eviter le chevauchement
+    Bloc buf_temp;
+
+    // Positionnement au debut du bloc numero i
+    fseek(fichier->file,(sizeof(Entete)+sizeof(Bloc)) * (i - 1), SEEK_SET);
+   fread(buf,sizeof(Buffer),1,fichier->file); // Lecture d'un bloc de caracteres correspondant a la taille du bloc dans le tampon temporaire
+       rewind(fichier->file);   // repositionnement endebut de fichier
+   if (fread(&buf_temp, sizeof(Bloc), 1, fichier->file) != 1) {
+        // Gestion d'erreur lors de la lecture
+        perror("Erreur lors de la lecture du bloc");
+        // Autres actions necessaires en cas d'erreur
+        return;
+    }
+}
+>>>>>>> b4b0d6dd6ca16dd20f31e45997149a94ae9edd75
