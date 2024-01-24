@@ -641,7 +641,7 @@ int main()
                             printf("\n\n\n \t\t\t\t\t<<<<<<<<<<CREATION DU FICHIER>>>>>>>>>>\n\n\n");
                             printf("\t veuillez introduire le nom du fichier que vous voulez creer\n\n");
                             scanf("%s",nom_physique);
-                            printf("\t veuillez introduire le mode d'ouverture du fichier\n\n");
+                            printf("\t veuillez introduire le mode d'ouverture du fichier ('n' pour new 'a' pour ancien)\n\n");
                             getchar();
                             scanf("%c",&mode);
                             fichier=ouvrir(nom_physique,mode);
