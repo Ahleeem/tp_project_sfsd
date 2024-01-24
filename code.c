@@ -679,4 +679,131 @@ void lireBloc(Fichier *fichier, int i, Bloc *buf)
         return;
     }
 }
+int main()
+{
+
+  int choix,choose,trouv,j,i,cle,choix_affich;
+  Bloc *buf;
+  char *info=malloc(sizeof(char)*50);
+  char *nom_physique=malloc(sizeof(char)*50);
+  char *nom_physique2=malloc(sizeof(char)*50);
+ Fichier *fichier;
+  char mode;
+    printf("\n %s","Veuillez introduire votre choix \n") ;
+    scanf("%d",&choix) ;
+    switch(choix)
+    {
+        case 1 :
+        {
+               puts("veulliez introduire votre choix \n") ;
+               scanf("%d",&choose) ;
+               switch(choose)
+                   {
+                      case 0 :
+                        {
+                            printf("CREATION DU FICHIER : \n");
+                            printf("veuillez iontroduire le nom du fichier que vous voulez creer \n");
+                            scanf("%s",nom_physique);
+                            printf("veuillez introduire le mode d'ouverture du fichier \n");
+                            getchar();
+                            scanf("%c",&mode);
+                            *fichier=ouvrir(nom_physique,mode);
+                            if(fichier!=NULL)
+                            {
+                               printf(" ouverture reussite \n");
+                            }
+                            else
+                            {
+                                printf("echec lors de l'ouverture \n");
+                            }
+                            printf("veuillez introduire le nombre d'enregistrement que vous voulez insererdes la premiere fois \n");
+                            int n;
+                            scanf("%d",&n);
+                            creation_fichier(fichier,n);
+                            fermer(fichier);
+                        }break ;
+                      case 1 :
+                        {
+                            printf("RECHERCHE DANS LE FICHIER \n");
+                            printf("veuillez introduire le  nom du fichier dans le quel vous voulez chercher \n");
+                            scanf("%s",&nom_physique);
+                            *fichier=ouvrir(nom_physique,'a');
+                            printf("veuillez introduire le la cle que vous voulez rechercher \n");
+                            scanf("%d",&cle);
+                            recherche(fichier,cle,&trouv,&i,&j);
+                            if(trouv==1)
+                            {
+                                printf("cle trouvee au bloc %d  a la position %d\n", i,j);
+                            }
+                            else
+                            {
+                                printf("cle inexistante\n ");
+                            }
+                            fermer(fichier);
+                        }break ;
+                      case 2 :
+                         {
+                            printf("INSERTION DANS LE FICHIER \n");
+                            printf("veuillez introduire le  nom du fichier dans le quel vous voulez inserer \n");
+                            scanf("%s",nom_physique);
+                            *fichier=ouvrir(nom_physique,'a');
+                            printf("veuillez introduire  la cle que vous voulez inserer \n");
+                            scanf("%d",&cle);
+                            printf("veuillez introduire l'info  que vous voulez inserer \n");
+                            scanf("%s",info);
+                            insertion(fichier,cle,info);
+                            fermer(fichier);
+                          }break ;
+                      case 3 :
+                         {
+                            printf("SUPPRESSION LOGIQUE DANS LE FICHIER \n");
+                            printf("veuillez introduire le  nom du fichier dans le quel vous voulez supprimer logiquement \n");
+                            scanf("%s",nom_physique);
+                            *fichier=ouvrir(nom_physique,'a');
+                            printf("veuillez introduire  la cle que vous voulez inserer\n\n");
+                            scanf("%d",&cle);
+                            Sup(fichier,cle);
+                            fermer(fichier);
+                         }break ;
+                      case 4 :
+                         {
+                             printf("SUPPRESSION PHYSIQUE DANS LE FICHIER");
+                             printf("veuillez introduire le  nom du fichier dans le quel vous voulez supprimer physiquement \n");
+                             scanf("%s",nom_physique);
+                             printf("veuillez introduire le  nom du fichier dans le quel vous voulez recuperer apres suppression");
+                             scanf("%s",nom_physique2);
+                             *fichier=ouvrir(nom_physique,'a');
+                             printf("attention cette suppression n'est lanc� que si la mopitie au mois des caract�res sont supprim�es logiquement \n");
+                             if(entete(fichier,5)>=(entete(fichier,1)-1)*50+entete(fichier,4))
+                             {
+                                 suppression_physique_L7OV7C(fichier,nom_physique2);
+                             }
+                              fermer(fichier);
+                         }break ;
+                     case 5 :
+                         {
+                             printf("AFFICHAGE DU FICHIER \n");
+                             printf("veuillez introduire le  nom du fichier dans le quel vous voulez afficher\n\n");
+                             scanf("%s",nom_physique);
+                             *fichier=ouvrir(nom_physique,'a');
+                             afficher_fichier(fichier);
+                             fermer(fichier);
+                         }break ;
+                    case 6:
+                          {
+                             printf("AFFICHAGE DES CARACTERISTIQUES  DU  FICHIER\n");
+                             printf("veuillez introduire le  nom du fichier dans le quel vous voulez reordonner \n");
+                             scanf("%s",nom_physique);
+                             *fichier=ouvrir(nom_physique,'a');
+                             afficher_entete(fichier);
+                             fermer(fichier);
+
+                          }break;
+           }
+
+        }break ;
+
+    } ;
+    return(0) ;
+}
 >>>>>>> b4b0d6dd6ca16dd20f31e45997149a94ae9edd75
