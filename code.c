@@ -605,15 +605,16 @@ void lireBloc(Fichier *fichier, int i, Bloc *buf)
     Bloc buf_temp;
 
     // Positionnement au debut du bloc numero i
-    fseek(fichier->file,  sizeof(Bloc) * (i - 1), SEEK_SET);
-
-    // Lecture d'un bloc de caracteres correspondant a la taille du bloc dans le tampon temporaire
-    if (fread(&buf_temp, sizeof(Bloc), 1, fichier->file) != 1) {
+    fseek(fichier->file,(sizeof(Entete)+sizeof(Bloc) * (i - 1), SEEK_SET);
+   fread(buf,sizeof(Buffer),1,fichier->file); // Lecture d'un bloc de caracteres correspondant a la taille du bloc dans le tampon temporaire
+       rewind(fichier->file);   // repositionnement endebut de fichier
+   if (fread(&buf_temp, sizeof(Bloc), 1, fichier->file) != 1) {
         // Gestion d'erreur lors de la lecture
         perror("Erreur lors de la lecture du bloc");
         // Autres actions necessaires en cas d'erreur
         return;
     }
+}
 /******************mise a jour d'index*********************/
 /*
 void mettre_a_jour_index(Fichier *fichier, Index *index, int nouveau_numero_bloc, int nouvelle_position) {
