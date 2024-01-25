@@ -530,7 +530,12 @@ int cle_correct(int cle)
 
 
 //***************************inas*************************************
-
+/* on ouvre le fichier2 pour stocker les enregistrement non suprimè physiquement
+dans la suppression on intialise pose1 pose2 bloc1 bloc2 qui represente la position dans les blocs de deuq fichiers
+on lit dans le buf1 le 1er bloc de fichier original on utilison lireBloc 
+on parcour les les blocs du fichier et on recupere les enregistrement un a un
+si un enregistrement n'est pas logiquement suprime elle l'ecrit dans le bnouveau fichier
+*/
 /**************suppression phy************************/
 void suppression_physique_L7OV7C(Fichier *fichier, char *nom_physique)
 {
@@ -582,6 +587,12 @@ void suppression_physique_L7OV7C(Fichier *fichier, char *nom_physique)
     fermer(fichier2);
 }
 /**************fermeture****************/
+/* on repositionne le curseur au debut du fichier pour garantir que le prochain acces au fichier se seran
+depuis le debut 
+on lit le contenu du 1er bloc de fichier dans le buf_temp (elle permet de s'assurer que le premeir bloc du fichier est a jour apres la 
+reouverture de fichier)
+on ferme le ficher avec fclose
+*/
 void fermer(Fichier *fichier)
 {
     // Repositionnement du curseur en debut de fichier
@@ -596,7 +607,11 @@ void fermer(Fichier *fichier)
     // Fermeture du fichier
     fclose(fichier->file);
 }
-
+/* elle utilise la fonction fseek pour deplacer le curseur de lecture dans le fichier a la position 
+du debut du bloc specifie par l'indice i
+    elle utilise fread pour lire les donne du bloc depuis le fichier vers la tampon buf
+elle renetialise la position du curseur dans le fichier en utilisant la fonction rewind 
+*/
 void lireBloc(Fichier *fichier, int i, Bloc *buf)
 {
 
